@@ -1,0 +1,15 @@
+{
+  "name": "iterators",
+  "version": "0.9.0",
+  "description": "TypeScript library of 2D and recursive array iterators with reverse and rotation.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^0.32.2"
+  }
+}
