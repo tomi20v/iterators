@@ -1,6 +1,6 @@
 // Vitest tests
 import { describe, it, expect } from 'vitest';
-import ArrayIterator from '../src/ArrayIterator';
+import {ArrayIterator} from "../src";
 
 describe('ArrayIterator', () => {
   it('should iterate over elements in order', () => {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ArrayIterator = void 0;
 // src/ArrayIterator.ts
 class ArrayIterator {
     constructor(a, reverse = false) {
@@ -32,5 +33,5 @@ class ArrayIterator {
         return new ArrayIterator(this.a, !this._reverse);
     }
 }
-exports.default = ArrayIterator;
+exports.ArrayIterator = ArrayIterator;
 //# sourceMappingURL=ArrayIterator.js.map

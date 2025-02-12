@@ -1,4 +1,4 @@
-export default class ArrayIterator<T> {
+export declare class ArrayIterator<T> {
     readonly length: number;
     protected readonly a: Array<T>;
     protected readonly _reverse: boolean;

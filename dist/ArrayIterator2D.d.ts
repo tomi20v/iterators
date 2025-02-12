@@ -1,5 +1,5 @@
-import ArrayIterator from "./ArrayIterator";
-export default class ArrayIterator2D<T> {
+import { ArrayIterator } from "./ArrayIterator";
+export declare class ArrayIterator2D<T> {
     readonly a: T[][];
     readonly rotation: number;
     constructor(a: T[][], rotation?: number);

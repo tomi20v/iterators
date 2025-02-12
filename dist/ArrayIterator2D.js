@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ArrayIterator2D = void 0;
 const ArrayIterator_1 = require("./ArrayIterator");
 class ArrayIterator2D {
     constructor(a, rotation = 0) {
@@ -13,22 +14,22 @@ class ArrayIterator2D {
         const cols = matrix[0].length;
         if (this.rotation === 0) {
             for (const row of matrix) {
-                yield new ArrayIterator_1.default(row);
+                yield new ArrayIterator_1.ArrayIterator(row);
             }
         }
         else if (this.rotation === 90) {
             for (let y = 0; y < cols; y++) {
-                yield new ArrayIterator_1.default(matrix.map(row => row[y]), true);
+                yield new ArrayIterator_1.ArrayIterator(matrix.map(row => row[y]), true);
             }
         }
         else if (this.rotation === 180) {
             for (let y = rows - 1; y >= 0; y--) {
-                yield new ArrayIterator_1.default(matrix[y], true);
+                yield new ArrayIterator_1.ArrayIterator(matrix[y], true);
             }
         }
         else if (this.rotation === 270) {
             for (let y = cols - 1; y >= 0; y--) {
-                yield new ArrayIterator_1.default(matrix.map(row => row[y]));
+                yield new ArrayIterator_1.ArrayIterator(matrix.map(row => row[y]));
             }
         }
     }
@@ -37,5 +38,5 @@ class ArrayIterator2D {
         return new ArrayIterator2D(this.a, rotation);
     }
 }
-exports.default = ArrayIterator2D;
+exports.ArrayIterator2D = ArrayIterator2D;
 //# sourceMappingURL=ArrayIterator2D.js.map

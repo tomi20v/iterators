@@ -1,5 +1,5 @@
 // src/ArrayIterator.ts
-export default class ArrayIterator<T> {
+export class ArrayIterator<T> {
   readonly length: number;
   protected readonly a: Array<T>;
   protected readonly _reverse: boolean = false;

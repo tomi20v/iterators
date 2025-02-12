@@ -1,2 +1,2 @@
-export { default as ArrayIterator } from "./ArrayIterator";
-export { default as ArrayIterator2D } from "./ArrayIterator2D";
+export { ArrayIterator } from "./ArrayIterator";
+export { ArrayIterator2D } from "./ArrayIterator2D";
