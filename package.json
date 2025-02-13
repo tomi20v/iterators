@@ -3,18 +3,27 @@
   "version": "0.9.5",
   "description": "TypeScript library of 2D and recursive array iterators with reverse and rotation.",
   "type": "module",
+  "main": "./dist/iterators.umd.cjs",
+  "module": "./dist/iterators.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js"
+      "import": "./dist/iterators.js",
+      "require": "./dist/iterators.umd.cjs"
     }
   },
-  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest"
   },
   "devDependencies": {
+    "@types/node": "^22.13.1",
     "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "vite-plugin-dts": "^4.5.0",
     "vitest": "^0.32.2"
   }
 }

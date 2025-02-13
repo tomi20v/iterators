@@ -1,6 +1,6 @@
-import {ArrayIterator} from "./ArrayIterator";
+import ArrayIterator from "./ArrayIterator";
 
-export class ArrayIterator2D<T> {
+export default class ArrayIterator2D<T> {
   readonly a: T[][];
   readonly rotation: number = 0;
 
