@@ -16,7 +16,7 @@ describe('ArrayIterator2D', () => {
   });
 
   it('should iterate column by column (rotated 90 degrees)', () => {
-    const iterator = new ArrayIterator2D(sampleMatrix).rotate90();
+    const iterator = new ArrayIterator2D(sampleMatrix).rotate();
     const result = Array.from(iterator).map(row => Array.from(row));
     expect(result).toEqual([
       [10, 7, 4, 1],
@@ -26,7 +26,7 @@ describe('ArrayIterator2D', () => {
   });
 
   it('should iterate in reverse order (rotated 180 degrees)', () => {
-    const iterator = new ArrayIterator2D(sampleMatrix).rotate90().rotate90();
+    const iterator = new ArrayIterator2D(sampleMatrix).rotate().rotate();
     const result = Array.from(iterator).map(row => Array.from(row));
     expect(result).toEqual([
       [12, 11, 10],
@@ -37,7 +37,7 @@ describe('ArrayIterator2D', () => {
   });
 
   it('should iterate column by column in reverse (rotated 270 degrees)', () => {
-    const iterator = new ArrayIterator2D(sampleMatrix).rotate90().rotate90().rotate90();
+    const iterator = new ArrayIterator2D(sampleMatrix).rotate().rotate().rotate();
     const result = Array.from(iterator).map(row => Array.from(row));
     expect(result).toEqual([
       [3, 6, 9, 12],
@@ -48,12 +48,62 @@ describe('ArrayIterator2D', () => {
 
   it('should return to original order after four rotations', () => {
     const iterator = new ArrayIterator2D(sampleMatrix)
-      .rotate90()
-      .rotate90()
-      .rotate90()
-      .rotate90();
+      .rotate()
+      .rotate()
+      .rotate()
+      .rotate();
     const result = Array.from(iterator).map(row => Array.from(row));
     expect(result).toEqual(sampleMatrix);
+  });
+
+  it('should iterate column by column (rotated -90 degrees)', () => {
+    const iterator = new ArrayIterator2D(sampleMatrix).rotate(-90);
+    const result = Array.from(iterator).map(row => Array.from(row));
+    expect(result).toEqual([
+      [3, 6, 9, 12],
+      [2, 5, 8, 11],
+      [1, 4, 7, 10]
+    ]);
+  });
+
+  it('should iterate in reverse order (rotated -180 degrees)', () => {
+    const iterator = new ArrayIterator2D(sampleMatrix).rotate(-90).rotate(-90);
+    const result = Array.from(iterator).map(row => Array.from(row));
+    expect(result).toEqual([
+      [12, 11, 10],
+      [9, 8, 7],
+      [6, 5, 4],
+      [3, 2, 1]
+    ]);
+  });
+
+  it('should iterate column by column in reverse (rotated -270 degrees)', () => {
+    const iterator = new ArrayIterator2D(sampleMatrix).rotate(-90).rotate(-90).rotate(-90);
+    const result = Array.from(iterator).map(row => Array.from(row));
+    expect(result).toEqual([
+      [10, 7, 4, 1],
+      [11, 8, 5, 2],
+      [12, 9, 6, 3]
+    ]);
+  });
+
+  it('should return to original order after four reverse rotations', () => {
+    const iterator = new ArrayIterator2D(sampleMatrix)
+      .rotate(-90)
+      .rotate(-90)
+      .rotate(-90)
+      .rotate(-90);
+    const result = Array.from(iterator).map(row => Array.from(row));
+    expect(result).toEqual(sampleMatrix);
+  });
+
+  it('tries', () => {
+    const iterator = new ArrayIterator2D(sampleMatrix);
+    for (const row of iterator) {
+      for (const field of row) {
+        console.log('row', row, 'field', field);
+      }
+    }
   });
 
 });
