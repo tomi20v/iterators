@@ -1,5 +1,14 @@
+// src/ArrayIterator2D.ts
 import ArrayIterator from "./ArrayIterator";
 
+/**
+ * Takes a 2D array and provides recursive iteration over it (just like
+ *  iterating over the original array).
+ * It supports rotation, which returns another ArrayIterator2D instance, which
+ *  keeps the original data array but provides different iterators.
+ * Useful when displaying bitmap like data in reactive frontend template loops
+ *  with the need of rotating without rotating the data itself.
+ */
 export default class ArrayIterator2D<T> {
   readonly a: T[][];
   readonly rotation: number = 0;
@@ -33,8 +42,11 @@ export default class ArrayIterator2D<T> {
     }
   }
 
-  public rotate90(): ArrayIterator2D<T> {
-    const rotation = (this.rotation + 90) % 360;
+  public rotate(degrees: number = 90): ArrayIterator2D<T> {
+    if ((degrees % 90) !== 0) {
+      throw new Error('only multiples of 90');
+    }
+    const rotation = (this.rotation + degrees + 360) % 360;
     return new ArrayIterator2D<T>(this.a, rotation);
   }
 }

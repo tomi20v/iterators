@@ -1,4 +1,10 @@
 // src/ArrayIterator.ts
+
+/**
+ * Takes an array of T items and iterates over it in normal or reverse order
+ *  (without changing the original array or creating a reversed one).
+ * Supports nested (N dimensional) arrays, which can be iterated recursively.
+ */
 export default class ArrayIterator<T> {
   readonly length: number;
   protected readonly a: Array<T>;
