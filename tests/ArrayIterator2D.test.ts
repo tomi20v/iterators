@@ -9,6 +9,16 @@ describe('ArrayIterator2D', () => {
     [10, 11, 12]
   ];
 
+  it('should have a unique id', () => {
+    const uniqueIds: string[] = [];
+    for (let x=0; x<100; x++) {
+      const a = new ArrayIterator2D(sampleMatrix);
+      expect(a.uniqueId).toBeDefined();
+      expect(uniqueIds).not.toContain(a.uniqueId);
+      uniqueIds.push(a.uniqueId);
+    }
+  })
+
   it('should iterate row by row when rotation is 0', () => {
     const iterator = new ArrayIterator2D(sampleMatrix);
     const result = Array.from(iterator).map(row => Array.from(row));
@@ -95,15 +105,6 @@ describe('ArrayIterator2D', () => {
       .rotate(-90);
     const result = Array.from(iterator).map(row => Array.from(row));
     expect(result).toEqual(sampleMatrix);
-  });
-
-  it('tries', () => {
-    const iterator = new ArrayIterator2D(sampleMatrix);
-    for (const row of iterator) {
-      for (const field of row) {
-        console.log('row', row, 'field', field);
-      }
-    }
   });
 
 });
