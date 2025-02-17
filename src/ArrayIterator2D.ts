@@ -1,4 +1,5 @@
 // src/ArrayIterator2D.ts
+import { uniqueId } from "lui-g";
 import ArrayIterator from "./ArrayIterator";
 
 /**
@@ -12,6 +13,7 @@ import ArrayIterator from "./ArrayIterator";
 export default class ArrayIterator2D<T> {
   readonly a: T[][];
   readonly rotation: number = 0;
+  readonly uniqueId: string = uniqueId();
 
   constructor(a: T[][], rotation = 0) {
     this.a = a;

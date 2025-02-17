@@ -1,5 +1,7 @@
 // src/ArrayIterator.ts
 
+import {uniqueId} from "lui-g";
+
 /**
  * Takes an array of T items and iterates over it in normal or reverse order
  *  (without changing the original array or creating a reversed one).
@@ -7,6 +9,7 @@
  */
 export default class ArrayIterator<T> {
   readonly length: number;
+  readonly uniqueId: string = uniqueId();
   protected readonly a: Array<T>;
   protected readonly _reverse: boolean = false;
 
