@@ -5,10 +5,12 @@ export default class FlatteningIterator<T> {
   readonly uniqueId: string = uniqueId();
   private data: any;
   private dimensions: string[];
+  private mapper;
 
   constructor(data: any, dimensions?: string[]) {
     this.data = data;
     this.dimensions = dimensions || this.generateDefaultDimensions(data);
+    this.mapper = this.defaultMapper;
   }
 
   *iterate(array: any, indices: number[] = []): Generator<IterationItem<T>> {
@@ -18,16 +20,29 @@ export default class FlatteningIterator<T> {
       }
     } else {
       const result: IterationItem<T> = { value: array };
+      let allDimensions = '';
       for (let i = 0; i < indices.length; i++) {
         const dimensionName = this.dimensions[i] || `dim${i}`;
         result[dimensionName] = indices[i];
+        allDimensions += dimensionName + indices[0];
       }
-      yield result;
+      yield this.mapper(result);
     }
   }
 
   [Symbol.iterator](): Iterator<IterationItem<T>> {
     return this.iterate(this.data);
+  }
+
+  public use(fn: (record: IterationItem<T>) => IterationItem<T>): FlatteningIterator<T> {
+    const oldMapper = this.mapper;
+    const boundFn = fn.bind(this);
+    this.mapper = (record: IterationItem<T>) => boundFn(oldMapper(record));
+    return this;
+  }
+
+  private defaultMapper(record: IterationItem<T>): IterationItem<T> {
+    return record;
   }
 
   private generateDefaultDimensions(data: any): string[] {

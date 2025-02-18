@@ -1,6 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import {describe, expect, it} from 'vitest';
 import FlatteningIterator from "../src/FlatteningIterator";
+import {IterationItem} from "../src/IterationItem";
 
+const any1dData = [10, 20, 30];
+const any2dData = [
+  [1, 2],
+  [3, 4],
+  [5, 6],
+];
 const any4dData = [
   [
     [[1, 2], [3, 4]],
@@ -10,12 +17,6 @@ const any4dData = [
     [[9, 10], [11, 12]],
     [[13, 14], [15, 16]]
   ]
-];
-
-const any2dData = [
-  [1, 2],
-  [3, 4],
-  [5, 6],
 ];
 
 describe('FlatteningIterator', () => {
@@ -64,8 +65,7 @@ describe('FlatteningIterator', () => {
   });
 
   it('should handle a one-dimensional array', () => {
-    const data = [10, 20, 30];
-    const iterator = new FlatteningIterator(data);
+    const iterator = new FlatteningIterator(any1dData);
     const result = Array.from(iterator);
 
     expect(result).toEqual([
@@ -122,5 +122,45 @@ describe('FlatteningIterator', () => {
     expect(result[2]).toEqual({ a: 0, b: 0, c: 1, d: 0, value: 3 });
     expect(result[3]).toEqual({ a: 0, b: 0, c: 1, d: 1, value: 4 });
   });
+
+  it('should map', () => {
+    const iterator = new FlatteningIterator<number>(any1dData);
+    iterator.use((record: IterationItem<number>) => {
+      return { ...record, value: record.value * 2, hu: 'FU' } as IterationItem<number>;
+    });
+    const result = Array.from(iterator);
+    function check(resultItem: IterationItem<number>, expectedItem: IterationItem<number>) {
+      expect(resultItem.x).toBe(expectedItem.x);
+      expect(resultItem.value).toBe(expectedItem.value);
+      expect(resultItem.hu).toBe(expectedItem.hu);
+    }
+    check(result[0], { value: 20, x: 0, hu: 'FU' });
+    check(result[1], { value: 40, x: 1, hu: 'FU' });
+    check(result[2], { value: 60, x: 2, hu: 'FU' });
+
+  });
+
+  it('should stack mappers', () => {
+    const iterator = new FlatteningIterator<number>(any1dData);
+    iterator.use((record) => {
+      return { ...record, value: record.value * 2, hu: 'FU' };
+    });
+    iterator.use((record) => {
+      return { ...record, value: record.value * 10, hux: 'BU' };
+    });
+    const result = Array.from(iterator);
+  });
+
+  it('should bind to the iterator instance when function', () => {
+    const iterator = new FlatteningIterator<number>(any1dData);
+    let cnt = 0;
+    iterator.use(function (this: FlatteningIterator<number>, record) {
+      expect(this).toBeInstanceOf(FlatteningIterator);
+      cnt++;
+      return { ...record, value: record.value * 2, hu: 'FU' };
+    });
+    Array.from(iterator);
+    expect(cnt).toBeGreaterThan(0);
+  })
 
 });
