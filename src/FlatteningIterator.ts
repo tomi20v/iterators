@@ -25,7 +25,7 @@ export default class FlatteningIterator<T> {
       for (let i = 0; i < indices.length; i++) {
         const dimensionName = this.dimensions[i] || `dim${i}`;
         result[dimensionName] = indices[i];
-        allDimensions += dimensionName + indices[0];
+        allDimensions += dimensionName + indices[i];
       }
       yield this.mapper(result);
     }
@@ -33,6 +33,10 @@ export default class FlatteningIterator<T> {
 
   [Symbol.iterator](): Iterator<IterationItem<T>> {
     return this.iterate(this.data);
+  }
+
+  public clone(): FlatteningIterator<T> {
+    return new FlatteningIterator<T>(this.data, this.dimensions).use(this.mapper);
   }
 
   /**
