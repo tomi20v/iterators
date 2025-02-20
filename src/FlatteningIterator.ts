@@ -41,6 +41,13 @@ export default class FlatteningIterator<T> {
   }
 
   /**
+   * returns a new FlatteningIterator instance with the given mapper applied
+   */
+  public map(fn: (record: IterationItem<T>) => IterationItem<T>): FlatteningIterator<T> {
+    return this.clone().use(fn);
+  }
+
+  /**
    * Adds a mapper function to the stack of mappers.
    */
   public use(fn: (record: IterationItem<T>) => IterationItem<T>): FlatteningIterator<T> {

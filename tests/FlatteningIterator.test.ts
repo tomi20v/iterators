@@ -219,18 +219,39 @@ describe('FlatteningIterator', () => {
       expect(done).toBeCalled();
     })
 
-  it('should reset iterators', () => {
-    const iterator = new FlatteningIterator<number>(any1dData);
-    iterator.use((record) => {
-      done();
-      return record;
-    });
-    Array.from(iterator);
-    expect(done).toBeCalled();
-    iterator.useDefaultMapper()
-    Array.from(iterator);
-    done.mockReset();
-    expect(done).not.toBeCalled();
+    it('should reset iterators', () => {
+      const iterator = new FlatteningIterator<number>(any1dData);
+      iterator.use((record) => {
+        done();
+        return record;
+      });
+      Array.from(iterator);
+      expect(done).toBeCalled();
+      iterator.useDefaultMapper()
+      Array.from(iterator);
+      done.mockReset();
+      expect(done).not.toBeCalled();
+    })
+
+    it('should give new instance with additional mapper applied', () => {
+      const iterator = new FlatteningIterator<number>(any1dData);
+      const iterator2 = iterator.map(function(this: FlatteningIterator<number>, record) {
+        done(this.uniqueId);
+        return { ...record, value: record.value * 2, hu: 'FU' };
+      });
+
+      // this actually calls done(), not sure how and why lol
+      // expect(iterator2).not.toBe(iterator);
+      // this indirectly checks they're not the same
+      expect(iterator2.uniqueId).not.toBe(iterator.uniqueId);
+
+      Array.from(iterator);
+      expect(done).not.toBeCalled();
+      const result2 = Array.from(iterator2);
+      expect(done).toBeCalledWith(iterator2.uniqueId);
+      expect(result2[0]).toEqual({ x: 0, value: 20, hu: 'FU' });
+    })
+
   })
 
 });
