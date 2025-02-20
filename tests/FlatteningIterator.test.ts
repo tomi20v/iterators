@@ -129,6 +129,39 @@ describe('FlatteningIterator', () => {
     expect(result[3]).toEqual({ a: 0, b: 0, c: 1, d: 1, value: 4 });
   });
 
+  describe('with deep arrays...', () => {
+    let deepArr: any[] = [];
+    beforeEach(() => {
+      deepArr = [42];
+      for (let i=0; i<25; i++) {
+        deepArr = [deepArr];
+      }
+    })
+
+    it('should use one letter dimension names when many dimensions', () => {
+      const iterator = new FlatteningIterator(deepArr);
+      const result = Array.from(iterator);
+      expect(result[0]).toHaveProperty('a');
+      expect(result[0]).toHaveProperty('b');
+      expect(result[0]).toHaveProperty('c');
+      expect(result[0]).toHaveProperty('x');
+      expect(result[0]).toHaveProperty('y');
+      expect(result[0]).toHaveProperty('z');
+    })
+
+    it('should use "dimXx" dimension names when many dimensions', () => {
+      deepArr = [deepArr];
+      const iterator = new FlatteningIterator(deepArr);
+      const result = Array.from(iterator);
+      expect(result[0]).toHaveProperty('dim0');
+      expect(result[0]).toHaveProperty('dim1');
+      expect(result[0]).toHaveProperty('dim2');
+      expect(result[0]).toHaveProperty('dim25');
+      expect(result[0]).toHaveProperty('dim26');
+    })
+
+  })
+
   it('should map', () => {
     const iterator = new FlatteningIterator<number>(any1dData);
     iterator.use((record: IterationItem<number>) => {

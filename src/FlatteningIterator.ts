@@ -2,6 +2,7 @@ import { uniqueId } from "lui-g";
 import {IterationItem} from "./IterationItem";
 
 export default class FlatteningIterator<T> {
+  static readonly maxOneLetterDimensions = 26;
   readonly uniqueId: string = uniqueId();
   private data: any;
   private dimensions: string[];
@@ -59,8 +60,16 @@ export default class FlatteningIterator<T> {
     return record;
   }
 
+  /**
+   * when <= 3 dimensions (depth of data), use [x, y, z[ as dimension names
+   * when >3 but <=26 dimensions, use [a, b, c, ..., x, y, z] as dimension names
+   * when >26 dimensions, use [dim0, dim1, dim2, ..., dim25, dim26] as dimension names
+   */
   private generateDefaultDimensions(data: any): string[] {
     const depth = this.getArrayDepth(data);
+    if (depth > FlatteningIterator.maxOneLetterDimensions) {
+      return [];
+    }
     const defaultNames = ['x', 'y', 'z'];
     return depth <= 3 ? defaultNames.slice(0, depth) : Array.from({ length: depth }, (_, i) => String.fromCharCode(97 + i));
   }
