@@ -6,12 +6,11 @@ export default class FlatteningIterator<T> {
   readonly uniqueId: string = uniqueId();
   private data: any;
   private dimensions: string[];
-  private mapper;
+  private mappers: Array<(record: IterationItem<T>) => IterationItem<T>> = [];
 
   constructor(data: any, dimensions?: string[]) {
     this.data = data;
     this.dimensions = dimensions || this.generateDefaultDimensions(data);
-    this.mapper = this.defaultMapper;
   }
 
   *iterate(array: any, indices: number[] = []): Generator<IterationItem<T>> {
@@ -27,7 +26,7 @@ export default class FlatteningIterator<T> {
         result[dimensionName] = indices[i];
         allDimensions += dimensionName + indices[i];
       }
-      yield this.mapper(result);
+      yield this.mapResult(result);
     }
   }
 
@@ -36,16 +35,17 @@ export default class FlatteningIterator<T> {
   }
 
   public clone(): FlatteningIterator<T> {
-    return new FlatteningIterator<T>(this.data, this.dimensions).use(this.mapper);
+    const ret = new FlatteningIterator<T>(this.data, this.dimensions);
+    this.mappers.forEach(mapper => ret.use(mapper));
+    return ret;
   }
 
   /**
    * Adds a mapper function to the stack of mappers.
    */
   public use(fn: (record: IterationItem<T>) => IterationItem<T>): FlatteningIterator<T> {
-    const oldMapper = this.mapper;
     const boundFn = fn.bind(this);
-    this.mapper = (record: IterationItem<T>) => boundFn(oldMapper(record));
+    this.mappers.push(boundFn);
     return this;
   }
 
@@ -53,15 +53,12 @@ export default class FlatteningIterator<T> {
    * clears applied mappers (resets mapper to the default null implementation)
    */
   public useDefaultMapper(): FlatteningIterator<T> {
-    this.mapper = this.defaultMapper;
+    this.mappers = [];
     return this;
   }
 
-  /**
-   * default 'null' mapper implementation
-   */
-  private defaultMapper(record: IterationItem<T>): IterationItem<T> {
-    return record;
+  private mapResult(result: IterationItem<T>): IterationItem<T> {
+    return this.mappers.reduce((acc, mapper) => mapper(acc), result);
   }
 
   /**
