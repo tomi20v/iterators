@@ -1,4 +1,4 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import FlatteningIterator from "../src/FlatteningIterator";
 import {IterationItem} from "../src/IterationItem";
 
@@ -153,14 +153,14 @@ describe('FlatteningIterator', () => {
 
   it('should bind to the iterator instance when function', () => {
     const iterator = new FlatteningIterator<number>(any1dData);
-    let cnt = 0;
+    const done = vi.fn();
     iterator.use(function (this: FlatteningIterator<number>, record) {
       expect(this).toBeInstanceOf(FlatteningIterator);
-      cnt++;
+      done();
       return { ...record, value: record.value * 2, hu: 'FU' };
     });
     Array.from(iterator);
-    expect(cnt).toBeGreaterThan(0);
+    expect(done).toBeCalled();
   })
 
 });
