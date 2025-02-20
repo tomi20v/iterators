@@ -34,6 +34,9 @@ export default class FlatteningIterator<T> {
     return this.iterate(this.data);
   }
 
+  /**
+   * Adds a mapper function to the stack of mappers.
+   */
   public use(fn: (record: IterationItem<T>) => IterationItem<T>): FlatteningIterator<T> {
     const oldMapper = this.mapper;
     const boundFn = fn.bind(this);
@@ -41,6 +44,17 @@ export default class FlatteningIterator<T> {
     return this;
   }
 
+  /**
+   * clears applied mappers (resets mapper to the default null implementation)
+   */
+  public useDefaultMapper(): FlatteningIterator<T> {
+    this.mapper = this.defaultMapper;
+    return this;
+  }
+
+  /**
+   * default 'null' mapper implementation
+   */
   private defaultMapper(record: IterationItem<T>): IterationItem<T> {
     return record;
   }

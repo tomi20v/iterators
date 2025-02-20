@@ -1,4 +1,4 @@
-import {describe, expect, it, vi} from 'vitest';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
 import FlatteningIterator from "../src/FlatteningIterator";
 import {IterationItem} from "../src/IterationItem";
 
@@ -19,7 +19,13 @@ const any4dData = [
   ]
 ];
 
+const done = vi.fn();
+
 describe('FlatteningIterator', () => {
+
+  beforeEach(() => {
+    done.mockReset();
+  })
 
   it('should have a unique id', () => {
     const uniqueIds: string[] = [];
@@ -153,7 +159,6 @@ describe('FlatteningIterator', () => {
 
   it('should bind to the iterator instance when function', () => {
     const iterator = new FlatteningIterator<number>(any1dData);
-    const done = vi.fn();
     iterator.use(function (this: FlatteningIterator<number>, record) {
       expect(this).toBeInstanceOf(FlatteningIterator);
       done();
@@ -161,6 +166,20 @@ describe('FlatteningIterator', () => {
     });
     Array.from(iterator);
     expect(done).toBeCalled();
+  })
+
+  it('should reset iterators', () => {
+    const iterator = new FlatteningIterator<number>(any1dData);
+    iterator.use((record) => {
+      done();
+      return record;
+    });
+    Array.from(iterator);
+    expect(done).toBeCalled();
+    iterator.useDefaultMapper()
+    Array.from(iterator);
+    done.mockReset();
+    expect(done).not.toBeCalled();
   })
 
 });
