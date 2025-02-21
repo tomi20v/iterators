@@ -34,7 +34,11 @@ export default class ArrayIterator<T> {
             return target.iterated[index];
           }
           if (prop in target.iterated) {
-            return (target.iterated as any)[prop].bind(target.iterated);
+            let targetProp = (target.iterated as any)[prop];
+            if (typeof targetProp === "function") {
+              targetProp = targetProp.bind(target.iterated);
+            }
+            return targetProp;
           }
         }
         return Reflect.get(target, prop);
