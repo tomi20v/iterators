@@ -1,18 +1,21 @@
 {
   "name": "iterators",
-  "version": "0.10.2",
+  "version": "0.11.0",
   "description": "TypeScript library of 2D and recursive array iterators with reverse and rotation.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^3.0.5",
     "typescript": "^5.7.3",
-    "vitest": "^0.32.2"
+    "vitest": ">3.0.0"
   },
   "dependencies": {
-    "lui-g": "^1.0.1"
+    "@vitest/ui": "^3.0.5",
+    "lui-g": "^1.0.2"
   }
 }

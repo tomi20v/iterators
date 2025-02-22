@@ -8,31 +8,50 @@ import {uniqueId} from "lui-g";
  * Supports nested (N dimensional) arrays, which can be iterated recursively.
  */
 export default class ArrayIterator<T> {
-  readonly length: number;
-  readonly uniqueId: string = uniqueId();
-  protected readonly a: Array<T>;
-  protected readonly _reverse: boolean = false;
+// this signature would be better but then the iterator methods return value won't work out
+// export default class ArrayIterator<T> implements ReadonlyArray<T> {
 
-  constructor(a: Array<T>, reverse: boolean = false) {
-    this.a = a;
-    this.length = a.length;
-    this._reverse = reverse;
+  readonly uniqueId: string = uniqueId();
+  protected readonly iterated: ReadonlyArray<T>;
+  protected readonly isReverse: boolean = false;
+
+  [index: number]: T; // Add this index signature
+
+  constructor(iterated: ReadonlyArray<T>, reverse: boolean = false) {
+    this.iterated = iterated;
+    this.isReverse = reverse;
 
     return new Proxy(this, {
       get: (target: ArrayIterator<T>, prop: string | symbol) => {
-        if (typeof prop === 'string' && !isNaN(Number(prop))) {
-          return target.a[Number(prop)];
+        // return own public properties and methods
+        if (['uniqueId','reverse'].includes(prop as string)) {
+          // @ts-expect-error
+          return this[prop];
+        }
+        if (typeof prop === "string") {
+          const index = Number(prop);
+          if (!isNaN(index)) {
+            return target.iterated[index];
+          }
+          if (prop in target.iterated) {
+            let targetProp = (target.iterated as any)[prop];
+            if (typeof targetProp === "function") {
+              targetProp = targetProp.bind(target.iterated);
+            }
+            return targetProp;
+          }
         }
         return Reflect.get(target, prop);
       }
     });
+
   }
 
   *[Symbol.iterator](): Generator<T | ArrayIterator<T extends (infer U)[] ? U : never>> {
-    const indices = this._reverse ? [...Array(this.length).keys()].reverse() : [...Array(this.length).keys()];
-
+    const keys = [...Array(this.iterated.length).keys()];
+    const indices = this.isReverse ? keys.reverse() : keys;
     for (const i of indices) {
-      const ret = this.a[i];
+      const ret = this.iterated[i];
       if (Array.isArray(ret)) {
         yield new ArrayIterator(ret);
       } else {
@@ -42,8 +61,7 @@ export default class ArrayIterator<T> {
   }
 
   reverse(): ArrayIterator<T> {
-    return new ArrayIterator<T>(this.a, !this._reverse);
+    return new ArrayIterator<T>(this.iterated, !this.isReverse);
   }
 
-  [index: number]: T; // Add this index signature
 }

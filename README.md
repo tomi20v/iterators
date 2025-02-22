@@ -9,16 +9,20 @@ These iterators can be used with "for (const x in iterator) {...}" syntax.
 This is great since now these can be used in reactive template for loops 
 (eg. svelte, to test).
 
+## def
+By recursive iterator I mean one that iterates over an iterable, yielding the 
+items. When an item is an iterable itself, then it yields another iterator
+of the same type over that item.
+
 ## contents
 
 These iterators take an array of data and (surprise!) provide an iterator to 
 use in loops.
 
 ### ArrayIterator
-Can handle recursively arrays of any number of dimensions.
-
-For simple (1D) arrays using the iterator doesn't make sense as arrays can be
-looped easily. However these can be reversed without reversing the original data.
+Recursively iterates arrays (ReadonlyArray<T> types) of any number of dimensions.
+Needs one loop per dimension when iterating. Compatible with frontend template
+loops.
 
 ```typescript
 const arr = [1, 2, 3, 4, 5];
@@ -48,11 +52,10 @@ for (const row of iterator) {
 }} 
 ```
 
-Not very useful at the end of the day, but a fun exercise.
-
 ### ArrayIterator2D
-Can handle (at least) 2D arrays. Provides rotating (by 90 degrees). Useful for 
-displaying some grid or table (eg. rotating blocks in tetris)
+Can handle (at least) 2D data. Provides rotating (by 90 degrees). Useful for 
+displaying some grid or table (eg. rotating blocks in tetris).
+Current version still extracts columns with 90 and 270 degree rotations.
 
 ```typescript
 const arr = [[1, 2, 3], [4, 5, 6]];
@@ -62,5 +65,61 @@ for (const row of iterator) {
     console.log(item); // 4, 1, 5, 2, 6, 3
   }}
 
+```
+
+### FlatteningIterator
+Recursively iterates arrays (ReadonlyArray<T> types) of any number of dimensions,
+but can be iterated in a single loop. Supports mappers for transformations etc.
+
+Yields IterationItem<T> items which contain the indices ("coordinates") per 
+dimension along with the value. Looping this way might result in more readable 
+code, and, can reduce cyclomatic complexity.
+
+```typescript
+const arr = [[4, 5], [14, 15], [24, 25]];
+const iterator = new FlatteningIterator(arr);
+console.log(...iterator);
+
+// { x: 0, y: 0, value: 4 }
+// { x: 0, y: 1, value: 5 }
+// { x: 1, y: 0, value: 14 }
+// { x: 1, y: 1, value: 15 } 
+// { x: 2, y: 0, value: 24 } 
+// { x: 2, y: 1, value: 25 }
+```
+
+#### Mappers for FlatteningIterator
+IteratorMappers object holds various mappers, which can be used with the 
+FlatteningIterator.
+
+```typescript
+const arr = [[4, 5], [14, 15], [24, 25]];
+const iterator = new FlatteningIterator(arr);
+iterator.use(IteratorMappers.valueOnly);
+console.log(...iterator); // 4, 5, 14, 15, 24, 25
+```
+
+#### Custom mappers
+Functions or arrow functions can be used for custom mappers. Functions will
+be bound to the iterator object when executing.
+
+```typescript
+import {IterationItem} from "./IterationItem";
+import FlatteningIterator from "./FlatteningIterator";
+
+const arr = [[4, 5], [14, 15], [24, 25]];
+const iterator = new FlatteningIterator<number>(arr).with(
+  (this: FlatteningIterator<number>, each: IterationItem<number>) => {
+    // expect(this).toBeInstanceOf(FlatteningIterator);
+    return each;
+  }
+);
+console.log(...iterator);
+// { x: 0, y: 0, value: 4 }
+// { x: 0, y: 1, value: 5 }
+// { x: 1, y: 0, value: 14 }
+// { x: 1, y: 1, value: 15 } 
+// { x: 2, y: 0, value: 24 } 
+// { x: 2, y: 1, value: 25 }
 ```
 
