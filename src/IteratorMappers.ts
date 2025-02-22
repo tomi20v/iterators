@@ -15,7 +15,20 @@ export const move = function <T>(
   return ret;
 }
 
-export const onlyTheValue = function <T>(this: FlatteningIterator<T>, item: IterationItem<T>): T {
+export const multiply = function <T>(
+  this: FlatteningIterator<T>,
+  item: IterationItem<T>,
+  mul: number
+): IterationItem<T> {
+  const ret: IterationItem<T> = { ...item };
+  (ret.value as number) *= mul;
+  return ret;
+}
+
+export const onlyTheValue = function <T>(
+  this: FlatteningIterator<T>,
+  item: IterationItem<T>
+): T {
   return item.value;
 }
 
@@ -40,5 +53,25 @@ export const rotateCoords = function <T>(
   const ret = { ...item };
   ret[firstAxe] = item[secondAxe];
   ret[secondAxe] = -item[firstAxe];
+  return ret;
+}
+
+export const scale = function <T>(
+  this: FlatteningIterator<T>,
+  item: IterationItem<T>,
+  scale: number | {
+    [key: string]: number;
+  }
+): IterationItem<T> {
+  const ret = { ...item };
+  if (typeof scale === "number") {
+    this.dimensions.forEach(key => {
+      ret[key] *= scale;
+    });
+    return ret;
+  }
+  for (const key in scale) {
+    ret[key] *= scale[key];
+  }
   return ret;
 }

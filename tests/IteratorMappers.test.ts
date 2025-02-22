@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import FlatteningIterator from "../src/FlatteningIterator";
-import {move, onlyTheValue, rotateCoords} from "../src/IteratorMappers";
+import {move, multiply, onlyTheValue, rotateCoords, scale} from "../src/IteratorMappers";
 
 const anyValue = 'anyValue';
 const anyItem = { x: 1, y: 7, value: anyValue};
@@ -14,6 +14,14 @@ describe('IteratorMappers.ts', () => {
       const result = move.bind(any2DIterator)(anyItem, {x: 11, y: 22});
       // Assert
       expect(result).toEqual({x: 12, y: 29, value: anyValue});
+    })
+  })
+
+  describe('multiply', () => {
+    it('multiplies', () => {
+      const anyOtherItem = { x: 1, y: 7, value: 5};
+      const result = multiply.bind(any2DIterator)(anyOtherItem, 42);
+      expect(result).toEqual({x: 1, y: 7, value: 210});
     })
   })
 
@@ -49,5 +57,18 @@ describe('IteratorMappers.ts', () => {
       expect(result).toEqual({y: 1, x: -7, value: anyValue});
     })
   })
+
+  describe('scale', () => {
+    it('scales by a simple number', () => {
+      const result = scale.bind(any2DIterator)(anyItem, 3);
+      // Assert
+      expect(result).toEqual({x: 3, y: 21, value: anyValue});
+    });
+    it('scales by an object', () => {
+      const result = scale.bind(any2DIterator)(anyItem, {x: 3, y: 4});
+      // Assert
+      expect(result).toEqual({x: 3, y: 28, value: anyValue});
+    });
+  });
 
 });
