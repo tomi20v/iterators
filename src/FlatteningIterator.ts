@@ -4,8 +4,8 @@ import {IterationItem} from "./IterationItem";
 export default class FlatteningIterator<T> {
   static readonly maxOneLetterDimensions = 26;
   readonly uniqueId: string = uniqueId();
+  readonly dimensions: string[];
   private data: any;
-  private dimensions: string[];
   private mappers: Array<(record: IterationItem<T>) => IterationItem<T>> = [];
 
   constructor(data: any, dimensions?: string[]) {
