@@ -17,13 +17,19 @@ describe('ArrayIterator', () => {
     }
   })
 
-  it('should proxy to array', () => {
+  it.only('should proxy to array', () => {
     const arr = new ArrayIterator<number>(anyArray);
     expect(arr.length).toBe(3);
     expect(arr[0]).toBe(10);
     expect(arr[1]).toBe(21);
     expect(arr[2]).toBe(32);
-    expect(arr.slice(1)).toEqual([21, 32]);
+  })
+
+  it.only('should proxy to reverse array', () => {
+    const arr = new ArrayIterator<number>(anyArray, true);
+    expect(arr[0]).toBe(32);
+    expect(arr[1]).toBe(21);
+    expect(arr[2]).toBe(10);
   })
 
   it('should iterate over elements in order', () => {

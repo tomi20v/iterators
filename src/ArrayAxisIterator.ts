@@ -4,6 +4,7 @@ type FixedIndices = (number | null)[] & { length: Exclude<number, 1>; }; // Enfo
 /**
  * Iterates an array over one axis (dimension) while keeping other indices fixed.
  * E.g. iterates a column in a 2D array.
+ * NOT recursive.
  * Receives an array of T (at least 2 dimensions), and an incomplete set of fixed
  *  indices (coordinates), and iterates over the missing fixed index, yielding
  *  only one value (i.e. not a sub-array or sub-iterator sliced by the missing
