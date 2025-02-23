@@ -1,7 +1,7 @@
 // src/ArrayIterator2D.ts
 import { uniqueId } from "lui-g";
 import ArrayIterator from "./ArrayIterator";
-import ArrayDimensionIterator from "./ArrayDimensionIterator";
+import ArrayAxisIterator from "./ArrayAxisIterator";
 
 /**
  * Takes a 2D array and provides recursive iteration over it (just like
@@ -21,7 +21,7 @@ export default class ArrayIterator2D<T> {
     this.rotation = rotation;
   }
 
-  *[Symbol.iterator](): Generator<ArrayIterator<T>|ArrayDimensionIterator<T>> {
+  *[Symbol.iterator](): Generator<ArrayIterator<T>|ArrayAxisIterator<T>> {
     const matrix = this.a as unknown as T[][];
     const rows = matrix.length;
     const cols = matrix[0].length;
@@ -32,7 +32,7 @@ export default class ArrayIterator2D<T> {
       }
     } else if (this.rotation === 90) {
       for (let y = 0; y < cols; y++) {
-        yield new ArrayDimensionIterator<T>(this.a, [null, y], true);
+        yield new ArrayAxisIterator<T>(this.a, [null, y], true);
       }
     } else if (this.rotation === 180) {
       for (let y = rows - 1; y >= 0; y--) {
@@ -40,7 +40,7 @@ export default class ArrayIterator2D<T> {
       }
     } else if (this.rotation === 270) {
       for (let y = cols - 1; y >= 0; y--) {
-        yield new ArrayDimensionIterator<T>(this.a, [null, y]);
+        yield new ArrayAxisIterator<T>(this.a, [null, y]);
       }
     }
   }

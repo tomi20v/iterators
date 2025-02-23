@@ -2,10 +2,16 @@ type NestedArray<T> = T[] | NestedArray<T>[];
 type FixedIndices = (number | null)[] & { length: Exclude<number, 1>; }; // Enforce exactly one null
 
 /**
- * takes an array, an incomplete set of fixed indices (coordinates), and iterates over the missing fixed index, yielding
- *  only one value (i.e. not a sub-array or sub-iterator sliced by the missing dimension)
+ * Iterates an array over one axis (dimension) while keeping other indices fixed.
+ * E.g. iterates a column in a 2D array.
+ * Receives an array of T (at least 2 dimensions), and an incomplete set of fixed
+ *  indices (coordinates), and iterates over the missing fixed index, yielding
+ *  only one value (i.e. not a sub-array or sub-iterator sliced by the missing
+ *  dimension)
+ * NOTE: the use of this iterator is limited, since it does not support dimension
+ *  swapping (for rotations). It is good enough for plain use but not for recursive.
  */
-class ArrayDimensionIterator<T> {
+class ArrayAxisIterator<T> {
   private array: NestedArray<T>;
   private dimension: number;
   private fixedIndices: FixedIndices;
@@ -25,15 +31,6 @@ class ArrayDimensionIterator<T> {
     if (fixedIndices.length !== this.dimension || fixedIndices.filter(i => i === null).length !== 1) {
       throw new Error("Fixed indices must match the number of dimensions and contain exactly one null value");
     }
-  }
-
-  private getArrayDimensions(arr: NestedArray<T>): number {
-    let dim = 0;
-    while (Array.isArray(arr)) {
-      dim++;
-      arr = arr[0] as NestedArray<T>;
-    }
-    return dim;
   }
 
   *[Symbol.iterator](): Generator<T> {
@@ -58,7 +55,17 @@ class ArrayDimensionIterator<T> {
     }
 
   }
+
+  private getArrayDimensions(arr: NestedArray<T>): number {
+    let dim = 0;
+    while (Array.isArray(arr)) {
+      dim++;
+      arr = arr[0] as NestedArray<T>;
+    }
+    return dim;
+  }
+
 }
 
-export default ArrayDimensionIterator;
+export default ArrayAxisIterator;
 
