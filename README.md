@@ -4,24 +4,18 @@ TypeScript library of various array iterators with reverse and rotation.
 ## why?
 Originally a proof of concept that matrix rotation can be done by 
 transforming the matrix iterators, leaving the original data intact.
+It is implemented for 2D arrays ("bitmaps") but there is no general
+n-dimension array solution yet.
 
-
-Some of these iterators are recursive, supporting 
-"for (const x in iterator) {...}" syntax. This is great since now these can 
-be used in reactive template for loops (eg. svelte).
-
-## def - recursive iterator
-By recursive iterator I mean one that iterates over nested arrays recursively,
-to be iterated by one for loop per dimension (depth level).
-
+These iterators support the "for (const x in iterator) {...}" syntax. 
+This is great since now these can be used in reactive template for 
+loops (eg. svelte).
 
 ## contents
 
-These iterators take an array of data and (surprise!) provide an iterator to 
-use in loops.
-
-### ArrayAxisIterator
+### ArrayAxisIterator<T>
 Iterates an array over one axis (dimension), eg. iterate a column in a 2D array.
+Not recursive, emits T items.
 
 ```typescript
 const anyArray3X3 = [
@@ -30,7 +24,7 @@ const anyArray3X3 = [
   [7, 8, 9],
 ];
 const iterator = new ArrayDimensionIterator(anyArray3X3, [null, 1]);
-for (const i of iterator) console.log(i); // 2m 5m 8
+for (const i of iterator) console.log(i); // 2, 5, 8
 ```
 
 ### ArrayIterator
