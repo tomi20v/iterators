@@ -17,7 +17,7 @@ describe('ArrayIterator', () => {
     }
   })
 
-  it.only('should proxy to array', () => {
+  it('should proxy to array', () => {
     const arr = new ArrayIterator<number>(anyArray);
     expect(arr.length).toBe(3);
     expect(arr[0]).toBe(10);
@@ -25,7 +25,7 @@ describe('ArrayIterator', () => {
     expect(arr[2]).toBe(32);
   })
 
-  it.only('should proxy to reverse array', () => {
+  it('should proxy to reverse array', () => {
     const arr = new ArrayIterator<number>(anyArray, true);
     expect(arr[0]).toBe(32);
     expect(arr[1]).toBe(21);

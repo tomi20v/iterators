@@ -1,5 +1,6 @@
 import {IterationItem} from "./IterationItem";
 import FlatteningIterator from "./FlatteningIterator";
+import { IterationMapper } from "./IterationMapper";
 
 export const move = function <T>(
   this: FlatteningIterator<T>,
