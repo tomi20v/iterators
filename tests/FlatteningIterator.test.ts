@@ -1,6 +1,7 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 import FlatteningIterator from "../src/FlatteningIterator";
 import {IterationItem} from "../src/IterationItem";
+import {multiply, onlyTheValue} from "../src/IteratorMappers";
 
 const any1dData = [10, 20, 30];
 const any2dData = [
@@ -250,6 +251,14 @@ describe('FlatteningIterator', () => {
       const result2 = Array.from(iterator2);
       expect(done).toBeCalledWith(iterator2.uniqueId);
       expect(result2[0]).toEqual({ x: 0, value: 20, hu: 'FU' });
+    })
+
+    it('uses a built in mapper (multiply)', () => {
+      const iterator = new FlatteningIterator<number>(any2dData);
+      iterator
+        .use(multiply(2))
+        .use(onlyTheValue());
+      expect([...iterator]).toEqual([2,4,6,8,10,12]);
     })
 
   })

@@ -107,4 +107,13 @@ describe('ArrayIterator2D', () => {
     expect(result).toEqual(sampleMatrix);
   });
 
+  it.each([
+    42,
+    91,
+    -11,
+  ])('should throw when not multiple of 90', (degrees: number) => {
+    const iterator = new ArrayIterator2D(sampleMatrix);
+    expect(() => iterator.rotate(degrees)).toThrow();
+  })
+
 });

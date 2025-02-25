@@ -1,12 +1,13 @@
 import { uniqueId } from "lui-g";
 import {IterationItem} from "./IterationItem";
+import {IterationMapper} from "./IterationMapper";
 
 export default class FlatteningIterator<T> {
   static readonly maxOneLetterDimensions = 26;
   readonly uniqueId: string = uniqueId();
   readonly dimensions: string[];
   private data: any;
-  private mappers: Array<(record: IterationItem<T>) => IterationItem<T>> = [];
+  private mappers: Array<IterationMapper<T>> = [];
 
   constructor(data: any, dimensions?: string[]) {
     this.data = data;
@@ -43,14 +44,14 @@ export default class FlatteningIterator<T> {
   /**
    * returns a new FlatteningIterator instance with the given mapper applied
    */
-  public map(fn: (record: IterationItem<T>) => IterationItem<T>): FlatteningIterator<T> {
+  public map(fn: IterationMapper<T>): FlatteningIterator<T> {
     return this.clone().use(fn);
   }
 
   /**
    * Adds a mapper function to the stack of mappers.
    */
-  public use(fn: (record: IterationItem<T>) => IterationItem<T>): FlatteningIterator<T> {
+  public use(fn: IterationMapper<T>): FlatteningIterator<T> {
     const boundFn = fn.bind(this);
     this.mappers.push(boundFn);
     return this;
@@ -65,7 +66,8 @@ export default class FlatteningIterator<T> {
   }
 
   private mapResult(result: IterationItem<T>): IterationItem<T> {
-    return this.mappers.reduce((acc, mapper) => mapper(acc), result);
+    // @ts-expect-error mapper is already bound here but the signature causes a type error
+    return this.mappers.reduce((acc, mapper) => mapper(acc), result) as unknown as IterationItem<T>;
   }
 
   /**

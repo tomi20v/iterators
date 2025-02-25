@@ -1,23 +1,31 @@
 # iterators
-TypeScript library of 2D and recursive array iterators with reverse and rotation.
+TypeScript library of various array iterators with reverse and rotation.
 
 ## why?
 Originally a proof of concept that matrix rotation can be done by 
 transforming the matrix iterators, leaving the original data intact.
+It is implemented for 2D arrays ("bitmaps") but there is no general
+n-dimension array solution yet.
 
-These iterators can be used with "for (const x in iterator) {...}" syntax.
-This is great since now these can be used in reactive template for loops 
-(eg. svelte, to test).
-
-## def
-By recursive iterator I mean one that iterates over an iterable, yielding the 
-items. When an item is an iterable itself, then it yields another iterator
-of the same type over that item.
+These iterators support the "for (const x in iterator) {...}" syntax. 
+This is great since now these can be used in reactive template for 
+loops (eg. svelte).
 
 ## contents
 
-These iterators take an array of data and (surprise!) provide an iterator to 
-use in loops.
+### ArrayAxisIterator<T>
+Iterates an array over one axis (dimension), eg. iterate a column in a 2D array.
+Not recursive, emits T items.
+
+```typescript
+const anyArray3X3 = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+];
+const iterator = new ArrayDimensionIterator(anyArray3X3, [null, 1]);
+for (const i of iterator) console.log(i); // 2, 5, 8
+```
 
 ### ArrayIterator
 Recursively iterates arrays (ReadonlyArray<T> types) of any number of dimensions.
@@ -64,7 +72,6 @@ for (const row of iterator) {
   for (const item of iterator) {
     console.log(item); // 4, 1, 5, 2, 6, 3
   }}
-
 ```
 
 ### FlatteningIterator
@@ -93,10 +100,14 @@ IteratorMappers object holds various mappers, which can be used with the
 FlatteningIterator.
 
 ```typescript
+import {onlyTheValue, rotateCoords} from "./IteratorMappers";
+
 const arr = [[4, 5], [14, 15], [24, 25]];
 const iterator = new FlatteningIterator(arr);
-iterator.use(IteratorMappers.valueOnly);
+const iterator2 = iterator.with(scale(2));
+iterator.use(onlyTheValue);
 console.log(...iterator); // 4, 5, 14, 15, 24, 25
+console.log(...iterator2); // 8, 10, 28, 30, 48, 50
 ```
 
 #### Custom mappers
