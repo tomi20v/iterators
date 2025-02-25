@@ -7,7 +7,7 @@ export default class FlatteningIterator<T> {
   readonly uniqueId: string = uniqueId();
   readonly dimensions: string[];
   private data: any;
-  private mappers: Array<(record: IterationItem<T>) => IterationItem<T>> = [];
+  private mappers: Array<IterationMapper<T>> = [];
 
   constructor(data: any, dimensions?: string[]) {
     this.data = data;
@@ -66,7 +66,8 @@ export default class FlatteningIterator<T> {
   }
 
   private mapResult(result: IterationItem<T>): IterationItem<T> {
-    return this.mappers.reduce((acc, mapper) => mapper(acc), result);
+    // @ts-expect-error mapper is already bound here but the signature causes a type error
+    return this.mappers.reduce((acc, mapper) => mapper(acc), result) as unknown as IterationItem<T>;
   }
 
   /**
