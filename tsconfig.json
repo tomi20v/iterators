@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "ES6",
+    "module": "CommonJS",
     "outDir": "dist",
     "strict": true,
     "declaration": true,
-    "sourceMap": true,
-    "moduleResolution": "Bundler"
+    "sourceMap": true
   },
   "include": ["src"]
 }
