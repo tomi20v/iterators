@@ -44,16 +44,15 @@ export default class FlatteningIterator<T> {
   /**
    * returns a new FlatteningIterator instance with the given mapper applied
    */
-  public map(fn: IterationMapper<T>): FlatteningIterator<T> {
-    return this.clone().use(fn);
+  public map(...fns: IterationMapper<T>[]): FlatteningIterator<T> {
+    return this.clone().use(...fns);
   }
 
   /**
    * Adds a mapper function to the stack of mappers.
    */
-  public use(fn: IterationMapper<T>): FlatteningIterator<T> {
-    const boundFn = fn.bind(this);
-    this.mappers.push(boundFn);
+  public use(...fns: IterationMapper<T>[]): FlatteningIterator<T> {
+    fns.forEach(fn => this.mappers.push(fn.bind(this)));
     return this;
   }
 

@@ -198,6 +198,17 @@ describe('FlatteningIterator', () => {
 
     });
 
+    it('accepts multiple mappers', () => {
+      const iterator = new FlatteningIterator<number>(any1dData);
+      iterator.use(
+        (record) => ({ ...record, value: record.value * 2, hu: 'FU' }),
+        (record) => ({ ...record, value: record.value * 5, hu: 'BU' }),
+        onlyTheValue()
+      );
+      const result = Array.from(iterator);
+      expect(result).toEqual([100, 200, 300]);
+    })
+
     it('should stack mappers', () => {
       const iterator = new FlatteningIterator<number>(any1dData);
       iterator.use((record) => {
